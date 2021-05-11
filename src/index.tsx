@@ -7,12 +7,12 @@ import { Tier } from "./container/tier";
 import { Test2 } from "./container/test2";
 import reportWebVitals from "./reportWebVitals";
 import { Tiers } from "./container/tiers";
-import {Test3} from  "./container/objectList"
+import { Test3 } from "./container/objectList";
 
 ReactDOM.render(
   <React.StrictMode>
     {/* <Test3 name={"name"} price={"price"} fileDelivered={"file"} /> */}
-    <Tiers/>
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

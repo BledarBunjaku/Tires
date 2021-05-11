@@ -1,5 +1,5 @@
 import React from "react";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 import {
   makeStyles,
   createStyles,
@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 600,
       margin: "0 auto",
       display: "flex",
+      backgroundColor: "#fff",
     },
     tierBar: {
       width: "100%",
@@ -103,7 +104,9 @@ export const Tier = () => {
           </Box>
         </Box>
         <Box className={classes.addReward}>
-         <Link to="/tier1"><Button>Manage Rewards</Button></Link> 
+          <Link to="/tier1">
+            <Button>Manage Rewards</Button>
+          </Link>
         </Box>
       </Box>
       <Box className={classes.addTire}>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   makeStyles,
   createStyles,
@@ -15,8 +15,8 @@ import {
   Input,
   CheckboxProps,
 } from "@material-ui/core";
-import axios from "axios"
-import {Test3} from "./objectList"
+import axios from "axios";
+import { Test3 } from "./objectList";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 5,
       color: "#fff",
       boxShadow: "0 1px 3px #b5b5b5",
+      marginBottom: 10,
     },
     name: {
       flexBasis: 150,
@@ -89,7 +90,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: 1.5,
     },
     actions: {
-      flexBasis: 100,
+      flexBasis: 85,
+      textAlign: "right",
     },
   })
 );
@@ -143,39 +145,33 @@ const names = [
 ];
 
 interface ArrayProps {
-  body: string,
-  id: number,
-  title: string,
-  userId: number
+  body: string;
+  id: number;
+  title: string;
+  userId: number;
 }
-
-
-
 
 export const Tiers = () => {
   const classes = useStyles();
 
   const [personName, setPersonName] = React.useState<string[]>([]);
   const [selectAll, setSelectAll] = React.useState<boolean>(false);
-  const [users, setUsers] = React.useState<ArrayProps>()
+  const [users, setUsers] = React.useState<ArrayProps[]>();
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setPersonName(event.target.value as string[]);
   };
 
+  useEffect(() => {
+    let users: any;
+    axios.get("https://jsonplaceholder.typicode.com/posts").then((res) => {
+      console.log(res.data.slice(0, 10));
+      users = [...res.data.slice(0, 10)];
+      setUsers(users);
+    });
+  }, []);
 
-  useEffect(()=>{
-    let users: any
-    axios.get("https://jsonplaceholder.typicode.com/posts")
-    .then(res =>{
-      console.log(res.data.slice(0, 10))
-      users = [...res.data.slice(0, 10)]
-    })    
-    setUsers(users)
-  })
-
-
-
+  console.log("users", users);
 
   return (
     <>
@@ -226,9 +222,11 @@ export const Tiers = () => {
         <Box className={classes.fileDelivered}>File Delivered</Box>
         <Box className={classes.actions}>Actions</Box>
       </Box>
-      {
-        users ? users.map(user =>(<Test3 name="name" price="price" fileDelivered="file" />)): null
-      }
+      {users
+        ? users.map((user) => (
+            <Test3 name="name" price="price" fileDelivered="file" />
+          ))
+        : null}
     </>
   );
 };
