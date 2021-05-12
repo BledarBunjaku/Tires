@@ -14,6 +14,7 @@ import {
   ListItemText,
   Input,
   CheckboxProps,
+  Typography
 } from "@material-ui/core";
 import axios from "axios";
 import { Test3 } from "./objectList";
@@ -24,6 +25,42 @@ const useStyles = makeStyles((theme: Theme) =>
       body: {
         background: "#EFEEEF",
       },
+    },
+    months:{
+      textTransform: "capitalize",
+      border: "2px solid #00C4A8",
+      marginRight: 5,
+      padding: "2px 12px",
+      "&:hover":{
+        backgroundColor: "#00C4A8",
+        color: "#fff"
+      }
+    },
+    monthWrapper:{
+      maxWidth: 1000,
+      margin: "0 auto",
+      overflow: "hidden",
+      paddingBottom: 20,      
+      "& p":{
+        paddingBottom: 10,
+        fontSize: "2rem",
+        textAlign: "center",
+        color: "#656465"
+      },
+      "& div":{
+        display: "inline-flex"
+      }
+    },
+
+    selectWrapper:{
+      "& p":{
+      paddingBottom: 15,
+      textAlign: "center",
+      fontSize: "2rem",
+      color: "#656465"
+      }      
+      
+      
     },
 
     selectObjectBar: {
@@ -71,9 +108,9 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 1000,
       margin: "0 auto",
       padding: " 5px 10px",
-      backgroundColor: "grey",
+      backgroundColor: "#B0AEB0",
       borderRadius: 5,
-      color: "#fff",
+      color: "#FFF",
       boxShadow: "0 1px 3px #b5b5b5",
       marginBottom: 10,
     },
@@ -131,24 +168,44 @@ const MenuProps = {
   variant: "menu",
 };
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
+// const names = [
+//   "Oliver Hansen",
+//   "Van Henry",
+//   "April Tucker",
+//   "Ralph Hubbard",
+//   "Omar Alexander",
+//   "Carlos Abbott",
+//   "Miriam Wagner",
+//   "Bradley Wilkerson",
+//   "Virginia Andrews",
+//   "Kelly Snyder",
+// ];
+
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+  ];
+
+
 
 interface ArrayProps {
   body: string;
   id: number;
   title: string;
   userId: number;
+}
+interface NamesProps {
+  
 }
 
 export const Tiers = () => {
@@ -157,24 +214,52 @@ export const Tiers = () => {
   const [personName, setPersonName] = React.useState<string[]>([]);
   const [selectAll, setSelectAll] = React.useState<boolean>(false);
   const [users, setUsers] = React.useState<ArrayProps[]>();
+  const [names, setNames] = React.useState<string[]>([]);
+  const [objSelected, setObjectSelected] = React.useState<ArrayProps[]>();
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setPersonName(event.target.value as string[]);
-  };
+  }; 
 
   useEffect(() => {
-    let users: any;
+    let newUsers: any;
     axios.get("https://jsonplaceholder.typicode.com/posts").then((res) => {
-      console.log(res.data.slice(0, 10));
-      users = [...res.data.slice(0, 10)];
-      setUsers(users);
-    });
+      newUsers = [...res.data.slice(0, 10)];
+      setUsers(newUsers)   
+      setNames(newUsers.map((user: any) => user.title.substr(0, 9)))   
+    });    
   }, []);
 
-  console.log("users", users);
 
+  const selectedObjs = () => {
+    let arr: any[]
+    if(users){
+    users.forEach(user =>{ 
+      personName.forEach(person => {
+        if(person === user.title.substr(0, 9)){
+          console.log("users", user)
+          
+        }})})}
+          setObjectSelected(arr)
+          // console.log("users", users)
+          // console.log("objSelected", arr)
+          
+        }
+
+
+        console.log("setObjectSelected", setObjectSelected)
+
+ 
   return (
     <>
+    <Box className={classes.monthWrapper}>
+      <Typography>TIER 1</Typography>
+      <Box>
+      {months.map(month => (<Button className={classes.months}>{month}</Button>))}
+      </Box>     
+    </Box>
+    <Box className={classes.selectWrapper}>
+    <Typography >Give Access to</Typography>
       <Box className={classes.selectObjectBar}>
         <Box className={classes.selectObjects}>
           <Select
@@ -193,7 +278,7 @@ export const Tiers = () => {
             >
               {selectAll ? "Unselect" : "Select all!"}
             </button>
-            {selectAll
+            {selectAll && names
               ? names.map((name) => (
                   <li value={name}>
                     <Box display="flex">
@@ -202,7 +287,7 @@ export const Tiers = () => {
                     </Box>
                   </li>
                 ))
-              : names.map((name) => (
+              : names.map((name, index) => (
                   <li value={name}>
                     <Box display="flex">
                       <Checkbox checked={personName.indexOf(name) > -1} />
@@ -213,8 +298,9 @@ export const Tiers = () => {
           </Select>
         </Box>
         <Box className={classes.addObjects}>
-          <Button>+ Add Files</Button>
+          <Button onClick={selectedObjs} >+ Add Files</Button>
         </Box>
+      </Box>
       </Box>
       <Box className={classes.wrapper}>
         <Box className={classes.name}>Name</Box>
