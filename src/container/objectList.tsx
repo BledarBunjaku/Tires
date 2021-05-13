@@ -50,9 +50,15 @@ interface PropTypes {
   name: string;
   price: string;
   fileDelivered: string;
+  deleteObjectSelected: () => void;
 }
 
-export const Test3: React.FC<PropTypes> = ({ name, price, fileDelivered }) => {
+export const Test3: React.FC<PropTypes> = ({
+  name,
+  price,
+  fileDelivered,
+  deleteObjectSelected,
+}) => {
   const classes = useStyles();
 
   return (
@@ -67,7 +73,7 @@ export const Test3: React.FC<PropTypes> = ({ name, price, fileDelivered }) => {
         <IconButton>
           <EditIcon className={classes.editTier} fontSize="small" />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={deleteObjectSelected}>
           <DeleteIcon className={classes.deleteTire} fontSize="small" />
         </IconButton>
       </Box>

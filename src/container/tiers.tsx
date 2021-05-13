@@ -14,7 +14,7 @@ import {
   ListItemText,
   Input,
   CheckboxProps,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import axios from "axios";
 import { Test3 } from "./objectList";
@@ -26,41 +26,39 @@ const useStyles = makeStyles((theme: Theme) =>
         background: "#EFEEEF",
       },
     },
-    months:{
+    months: {
       textTransform: "capitalize",
       border: "2px solid #00C4A8",
       marginRight: 5,
       padding: "2px 12px",
-      "&:hover":{
+      "&:hover": {
         backgroundColor: "#00C4A8",
-        color: "#fff"
-      }
+        color: "#fff",
+      },
     },
-    monthWrapper:{
+    monthWrapper: {
       maxWidth: 1000,
       margin: "0 auto",
       overflow: "hidden",
-      paddingBottom: 20,      
-      "& p":{
+      paddingBottom: 20,
+      "& p": {
         paddingBottom: 10,
         fontSize: "2rem",
         textAlign: "center",
-        color: "#656465"
+        color: "#656465",
       },
-      "& div":{
-        display: "inline-flex"
-      }
+      "& div": {
+        display: "inline-flex",
+      },
     },
 
-    selectWrapper:{
-      "& p":{
-      paddingBottom: 15,
-      textAlign: "center",
-      fontSize: "2rem",
-      color: "#656465"
-      }      
-      
-      
+    selectWrapper: {
+      "& p": {
+        paddingBottom: 15,
+        textAlign: "center",
+        fontSize: "2rem",
+        color: "#656465",
+      },
     },
 
     selectObjectBar: {
@@ -182,21 +180,19 @@ const MenuProps = {
 // ];
 
 const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-  ];
-
-
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 interface ArrayProps {
   body: string;
@@ -204,9 +200,7 @@ interface ArrayProps {
   title: string;
   userId: number;
 }
-interface NamesProps {
-  
-}
+interface NamesProps {}
 
 export const Tiers = () => {
   const classes = useStyles();
@@ -215,92 +209,104 @@ export const Tiers = () => {
   const [selectAll, setSelectAll] = React.useState<boolean>(false);
   const [users, setUsers] = React.useState<ArrayProps[]>();
   const [names, setNames] = React.useState<string[]>([]);
-  const [objSelected, setObjectSelected] = React.useState<ArrayProps[]>();
+  const [objSelected, setObjSelected] = React.useState<ArrayProps[]>([]);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setPersonName(event.target.value as string[]);
-  }; 
+  };
 
   useEffect(() => {
     let newUsers: any;
     axios.get("https://jsonplaceholder.typicode.com/posts").then((res) => {
       newUsers = [...res.data.slice(0, 10)];
-      setUsers(newUsers)   
-      setNames(newUsers.map((user: any) => user.title.substr(0, 9)))   
-    });    
+      setUsers(newUsers);
+      setNames(newUsers.map((user: any) => user.title.substr(0, 11)));
+    });
   }, []);
 
-
+  let newArray: any[] = [];
   const selectedObjs = () => {
-    let arr: any[]
-    if(users){
-    users.forEach(user =>{ 
-      personName.forEach(person => {
-        if(person === user.title.substr(0, 9)){
-          console.log("users", user)
-          
-        }})})}
-          setObjectSelected(arr)
-          // console.log("users", users)
-          // console.log("objSelected", arr)
-          
-        }
+    if (users) {
+      users.forEach((user) => {
+        personName.forEach((person) => {
+          if (person && person === user.title.substr(0, 11)) {
+            newArray = [...newArray, user];
+            console.log("newArray1", newArray);
+            setPersonName([]);
+          } else if (selectAll) {
+            newArray = [...users];
+            setNames([]);
+            console.log("newArray2", newArray);
+          }
+        });
+      });
+    }
+    setObjSelected([...newArray]);
+    newArray = [];
+  };
 
+  const deleteObjectSelected = (id: number) => {
+    let filteredObjects = objSelected.filter((obj) => id !== obj.id);
+    setObjSelected(filteredObjects);
+  };
 
-        console.log("setObjectSelected", setObjectSelected)
+  console.log("personName", personName);
+  console.log("names", names);
+  console.log("setObjSelected", objSelected);
 
- 
   return (
     <>
-    <Box className={classes.monthWrapper}>
-      <Typography>TIER 1</Typography>
-      <Box>
-      {months.map(month => (<Button className={classes.months}>{month}</Button>))}
-      </Box>     
-    </Box>
-    <Box className={classes.selectWrapper}>
-    <Typography >Give Access to</Typography>
-      <Box className={classes.selectObjectBar}>
-        <Box className={classes.selectObjects}>
-          <Select
-            className={classes.select}
-            multiple
-            value={selectAll ? names : personName} //setSelect
-            onChange={(e) => (selectAll ? null : handleChange(e))} //setSelect
-            input={<Input disableUnderline={true} />}
-            renderValue={(selected) => (selected as string[]).join(", ")}
-            MenuProps={{}}
-          >
-            <button
-              onClick={() => {
-                setSelectAll(!selectAll);
-              }}
-            >
-              {selectAll ? "Unselect" : "Select all!"}
-            </button>
-            {selectAll && names
-              ? names.map((name) => (
-                  <li value={name}>
-                    <Box display="flex">
-                      <Checkbox checked={true} />
-                      <ListItemText primary={name} />
-                    </Box>
-                  </li>
-                ))
-              : names.map((name, index) => (
-                  <li value={name}>
-                    <Box display="flex">
-                      <Checkbox checked={personName.indexOf(name) > -1} />
-                      <ListItemText primary={name} />
-                    </Box>
-                  </li>
-                ))}
-          </Select>
-        </Box>
-        <Box className={classes.addObjects}>
-          <Button onClick={selectedObjs} >+ Add Files</Button>
+      <Box className={classes.monthWrapper}>
+        <Typography>TIER 1</Typography>
+        <Box>
+          {months.map((month) => (
+            <Button className={classes.months}>{month}</Button>
+          ))}
         </Box>
       </Box>
+      <Box className={classes.selectWrapper}>
+        <Typography>Give Access to</Typography>
+        <Box className={classes.selectObjectBar}>
+          <Box className={classes.selectObjects}>
+            <Select
+              className={classes.select}
+              multiple
+              value={selectAll ? names : personName} //setSelect
+              onChange={(e) => (selectAll ? null : handleChange(e))} //setSelect
+              input={<Input disableUnderline={true} />}
+              renderValue={(selected) => (selected as string[]).join(", ")}
+              MenuProps={{}}
+            >
+              <button
+                onClick={() => {
+                  setSelectAll(!selectAll);
+                }}
+              >
+                {selectAll ? "Unselect" : "Select all!"}
+              </button>
+              {selectAll && names
+                ? names.map((name) => (
+                    <li value={name}>
+                      <Box display="flex">
+                        <Checkbox checked={true} />
+                        <ListItemText primary={name} />
+                      </Box>
+                    </li>
+                  ))
+                : names.map((name, index) => (
+                    <li value={name}>
+                      <Box display="flex">
+                        <Checkbox checked={personName.indexOf(name) > -1} />
+                        <ListItemText primary={name} />
+                      </Box>
+                    </li>
+                  ))}
+            </Select>
+          </Box>
+          <Box className={classes.addObjects}>
+            <Button onClick={selectedObjs}>+ Add Files</Button>
+          </Box>
+        </Box>
       </Box>
       <Box className={classes.wrapper}>
         <Box className={classes.name}>Name</Box>
@@ -309,8 +315,13 @@ export const Tiers = () => {
         <Box className={classes.actions}>Actions</Box>
       </Box>
       {users
-        ? users.map((user) => (
-            <Test3 name="name" price="price" fileDelivered="file" />
+        ? objSelected.map((obj) => (
+            <Test3
+              name={obj.title.substr(0, 11)}
+              price="price"
+              fileDelivered={obj.body.substr(0, 10)}
+              deleteObjectSelected={() => deleteObjectSelected(obj.id)}
+            />
           ))
         : null}
     </>
