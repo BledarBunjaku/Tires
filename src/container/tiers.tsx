@@ -153,18 +153,7 @@ const MenuProps = {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
     },
-  },
-  getContentAnchorEl: null,
-  anchorOrigin: {
-    vertical: "bottom",
-    horizontal: "center",
-  },
-  transformOrigin: {
-    vertical: "top",
-    horizontal: "center",
-  },
-  variant: "menu",
-};
+}}
 
 // const names = [
 //   "Oliver Hansen",
@@ -204,7 +193,6 @@ interface NamesProps {}
 
 export const Tiers = () => {
   const classes = useStyles();
-
   const [personName, setPersonName] = React.useState<string[]>([]);
   const [selectAll, setSelectAll] = React.useState<boolean>(false);
   const [users, setUsers] = React.useState<ArrayProps[]>();
@@ -223,6 +211,11 @@ export const Tiers = () => {
       setNames(newUsers.map((user: any) => user.title.substr(0, 11)));
     });
   }, []);
+  useEffect(() => {
+    if(!selectAll){
+      setPersonName([]);
+    }
+}, [selectAll]);
 
   let newArray: any[] = [];
   const selectedObjs = () => {
@@ -251,8 +244,6 @@ export const Tiers = () => {
   };
 
   console.log("personName", personName);
-  console.log("names", names);
-  console.log("setObjSelected", objSelected);
 
   return (
     <>
@@ -271,11 +262,11 @@ export const Tiers = () => {
             <Select
               className={classes.select}
               multiple
-              value={selectAll ? names : personName} //setSelect
-              onChange={(e) => (selectAll ? null : handleChange(e))} //setSelect
+              value={selectAll ? names : personName} 
+              onChange={(e) => (selectAll ? null : handleChange(e))}
               input={<Input disableUnderline={true} />}
               renderValue={(selected) => (selected as string[]).join(", ")}
-              MenuProps={{}}
+              MenuProps={MenuProps}
             >
               <button
                 onClick={() => {
@@ -293,14 +284,16 @@ export const Tiers = () => {
                       </Box>
                     </li>
                   ))
-                : names.map((name, index) => (
-                    <li value={name}>
+                : names.map((name) => (
+                    <li  value={name}>
                       <Box display="flex">
-                        <Checkbox checked={personName.indexOf(name) > -1} />
+                        <Checkbox checked={personName.indexOf(name)>1} />
                         <ListItemText primary={name} />
                       </Box>
                     </li>
                   ))}
+
+                  
             </Select>
           </Box>
           <Box className={classes.addObjects}>

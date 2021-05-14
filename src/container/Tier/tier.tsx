@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import {
   makeStyles,
@@ -10,6 +10,7 @@ import { Button, Box, IconButton } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import {TierComponent} from "./tierComponent"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -86,8 +87,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Tier = () => {
+export const Tier : React.FC = () => {
   const classes = useStyles();
+  const [tier, setTier] =  React.useState<any>()
 
   return (
     <>
