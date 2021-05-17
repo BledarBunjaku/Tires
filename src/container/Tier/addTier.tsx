@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  makeStyles,
-  createStyles,
-  Theme,
-} from "@material-ui/core/styles";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { Button, Box } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { Tier } from "./tier";
@@ -84,22 +80,29 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface TierProps {
-  setName: (x:string) => void
-  deleteTire: (x: number) => void
-  addTier: () => void
-  tier: any 
+  setName: (x: string) => void;
+  deleteTire: (x: number) => void;
+  addTier: () => void;
+  tier: any;
+  selectReward: (id: number) => void;
 }
 
-export const AddTier: React.FC<TierProps> = ({ deleteTire, addTier, tier }:TierProps) => {
+export const AddTier: React.FC<TierProps> = ({
+  deleteTire,
+  addTier,
+  tier,
+  selectReward,
+}: TierProps) => {
   const classes = useStyles();
 
   console.log("tier", tier);
 
-    return (
+  return (
     <>
       {tier
         ? tier.map((x: any) => (
             <Tier
+              selectReward={() => selectReward(x.id)}
               enteredName={x.name}
               name={x.name}
               key={x.id}

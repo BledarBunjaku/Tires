@@ -1,9 +1,5 @@
-import React, {useEffect } from "react";
-import {
-  makeStyles,
-  createStyles,
-  Theme,
-} from "@material-ui/core/styles";
+import React, { useEffect } from "react";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import {
   Button,
   Box,
@@ -24,9 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
 
-    tierWrapper:{
+    tierWrapper: {
       maxWidth: 1000,
-      margin: "0 auto"
+      margin: "0 auto",
     },
     months: {
       textTransform: "capitalize",
@@ -41,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
     //width 100%
     monthWrapper: {
-      width: "100%",  
+      width: "100%",
       margin: "0 auto",
       overflow: "hidden",
       paddingBottom: 20,
@@ -153,7 +149,8 @@ const MenuProps = {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
     },
-}}
+  },
+};
 
 // const names = [
 //   "Oliver Hansen",
@@ -190,69 +187,84 @@ interface ArrayProps {
   userId: number;
 }
 interface TiersProps {
-  name: string | undefined
+  personName: any;
+  users: any;
+  names: string[];
+  objSelected: any[];
+  deleteObjectSelected: (id: number) => void;
+  selectedObjs: () => void;
+  handleChange: (event: React.ChangeEvent<{ value: unknown }>) => void;
+  selectAll: boolean;
 }
 
-export const Rewards: React.FC< TiersProps> = ({name}) => {
+export const Rewards: React.FC<TiersProps> = ({
+  personName,
+  names,
+  users,
+  objSelected,
+  deleteObjectSelected,
+  selectedObjs,
+  handleChange,
+  selectAll,
+}: TiersProps) => {
   const classes = useStyles();
-  const [personName, setPersonName] = React.useState<string[]>([]);
-  const [selectAll, setSelectAll] = React.useState<boolean>(false);
-  const [users, setUsers] = React.useState<ArrayProps[]>();
-  const [names, setNames] = React.useState<string[]>([]);
-  const [objSelected, setObjSelected] = React.useState<ArrayProps[]>([]);
-  
+  // const [personName, setPersonName] = React.useState<string[]>([]);
+  // const [selectAll, setSelectAll] = React.useState<boolean>(false);
+  // const [users, setUsers] = React.useState<ArrayProps[]>();
+  // const [names, setNames] = React.useState<string[]>([]);
+  // const [objSelected, setObjSelected] = React.useState<ArrayProps[]>([]);
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setPersonName(event.target.value as string[]);
-  };
+  // const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  //   setPersonName(event.target.value as string[]);
+  // };
 
-  useEffect(() => {
-    let newUsers: any;
-    axios.get("https://jsonplaceholder.typicode.com/posts").then((res) => {
-      newUsers = [...res.data.slice(0, 10)];
-      setUsers(newUsers);
-      setNames(newUsers.map((user: any) => user.title.substr(0, 11)));
-    });
-  }, []);
+  // useEffect(() => {
+  //   let newUsers: any;
+  //   axios.get("https://jsonplaceholder.typicode.com/posts").then((res) => {
+  //     newUsers = [...res.data.slice(0, 10)];
+  //     setUsers(newUsers);
+  //     setNames(newUsers.map((user: any) => user.title.substr(0, 11)));
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    if(!selectAll){
-      setPersonName([]);
-    }
-}, [selectAll]);
+  // useEffect(() => {
+  //   if (!selectAll) {
+  //     setPersonName([]);
+  //   }
+  // }, [selectAll]);
 
-  let newArray: any[] = [];
-  const selectedObjs = () => {
-    if (users) {
-      users.forEach((user) => {
-        personName.forEach((person) => {
-          if (person && person === user.title.substr(0, 11)) {
-            newArray = [...newArray, user];
-            console.log("newArray1", newArray);
-            setPersonName([]);
-          } else if (selectAll) {
-            newArray = [...users];
-            setNames([]);
-            console.log("newArray2", newArray);
-          }
-        });
-      });
-    }
-    setObjSelected([...newArray]);
-    newArray = [];
-  };
+  // let newArray: any[] = [];
+  // const selectedObjs = () => {
+  //   if (users) {
+  //     users.forEach((user) => {
+  //       personName.forEach((person) => {
+  //         if (person && person === user.title.substr(0, 11)) {
+  //           newArray = [...newArray, user];
+  //           console.log("newArray1", newArray);
+  //           setPersonName([]);
+  //         } else if (selectAll) {
+  //           newArray = [...users];
+  //           setNames([]);
+  //           console.log("newArray2", newArray);
+  //         }
+  //       });
+  //     });
+  //   }
+  //   setObjSelected([...newArray]);
+  //   newArray = [];
+  // };
 
-  const deleteObjectSelected = (id: number) => {
-    let filteredObjects = objSelected.filter((obj) => id !== obj.id);
-    setObjSelected(filteredObjects);
-  };
+  // const deleteObjectSelected = (id: number) => {
+  //   let filteredObjects = objSelected.filter((obj) => id !== obj.id);
+  //   setObjSelected(filteredObjects);
+  // };
 
   console.log("personName", personName);
 
   return (
     <Box className={classes.tierWrapper}>
       <Box className={classes.monthWrapper}>
-        <Typography>{name}</Typography>
+        <Typography>{"name"}</Typography>
         <Box>
           {months.map((month) => (
             <Button className={classes.months}>{month}</Button>
@@ -266,38 +278,24 @@ export const Rewards: React.FC< TiersProps> = ({name}) => {
             <Select
               className={classes.select}
               multiple
-              value={selectAll ? names : personName} 
-              onChange={(e) => (selectAll ? null : handleChange(e))}
+              value={personName}
+              onChange={(e) => handleChange(e)}
               input={<Input disableUnderline={true} />}
               renderValue={(selected) => (selected as string[]).join(", ")}
               MenuProps={MenuProps}
             >
-              <button
-                onClick={() => {
-                  setSelectAll(!selectAll);
-                }}
-              >
-                {selectAll ? "Unselect" : "Select all!"}
-              </button>
-              {selectAll && names
-                ? names.map((name) => (
-                    <li value={name}>
-                      <Box display="flex">
-                        <Checkbox checked={true} />
-                        <ListItemText primary={name} />
-                      </Box>
-                    </li>
-                  ))
-                : names.map((name) => (
-                    <li  value={name}>
-                      <Box display="flex">
-                        <Checkbox checked={personName.indexOf(name)>1} />
-                        <ListItemText primary={name} />
-                      </Box>
-                    </li>
-                  ))}
+              <li value="aaa">
+                <button>Select all!</button>
+              </li>
 
-                  
+              {names.map((name) => (
+                <li value={name}>
+                  <Box display="flex">
+                    <Checkbox checked={personName.indexOf(name) > -1} />
+                    <ListItemText primary={name} />
+                  </Box>
+                </li>
+              ))}
             </Select>
           </Box>
           <Box className={classes.addObjects}>

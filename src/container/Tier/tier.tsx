@@ -44,11 +44,11 @@ const useStyles = makeStyles((theme: Theme) =>
     addReward: {
       marginLeft: 5,
       height: "100%",
-      "& a":{
+      "& a": {
         textDecoration: "none",
         "& button": {
           width: " max-content",
-          textTransform: "capitalize",          
+          textTransform: "capitalize",
           backgroundColor: "#00CBB0",
           color: "#fff",
           "&:hover": {
@@ -56,8 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
             background: "#00CBB0",
           },
         },
-      }
-      
+      },
     },
     addTire: {
       margin: "0 auto",
@@ -86,13 +85,15 @@ const useStyles = makeStyles((theme: Theme) =>
 interface PropType {
   name: string;
   deleteTire: () => void;
-  enteredName: string | null| undefined
+  enteredName: string | null | undefined;
+  selectReward: () => void;
 }
 
 export const Tier: React.FC<PropType> = ({
   name,
   deleteTire,
-  enteredName
+  enteredName,
+  selectReward,
 }: PropType) => {
   const classes = useStyles();
 
@@ -111,7 +112,7 @@ export const Tier: React.FC<PropType> = ({
       </Box>
       <Box className={classes.addReward}>
         <Link to="/tier1">
-          <Button  >Manage Rewards</Button>
+          <Button onClick={() => selectReward()}>Manage Rewards</Button>
         </Link>
       </Box>
     </Box>
