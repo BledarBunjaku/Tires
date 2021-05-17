@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   makeStyles,
@@ -10,7 +10,7 @@ import { Button, Box, IconButton } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
-import {TierComponent} from "./tierComponent"
+import { TierComponent } from "./tierComponent";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,32 +87,44 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Tier : React.FC = () => {
+interface TierProps {
+  id: number;
+  name: string | null;
+}
+
+export const Tier: React.FC = () => {
   const classes = useStyles();
-  const [tier, setTier] =  React.useState<any>()
+  const [tier, setTier] = useState<TierProps[]>([]);
+
+  console.log("tier", tier);
+
+  const addTier = () => {
+    const enteredName = prompt("Please enter your name");
+    let obj = {
+      id: tier.length,
+      name: enteredName,
+    };
+    setTier([...tier, { ...obj }]);
+  };
+
+  const deleteTire = (id: number) => {
+    let array = tier.filter((obj) => obj.id !== id);
+    setTier([...array]);
+  };
 
   return (
     <>
-      <Box className={classes.wrapper}>
-        <Box className={classes.tierBar}>
-          <Box className={classes.tierBarName}>Tier 1</Box>
-          <Box className={classes.tierBarButtons}>
-            <IconButton>
-              <EditIcon className={classes.editTier} fontSize="small" />
-            </IconButton>
-            <IconButton>
-              <DeleteIcon className={classes.deleteTire} fontSize="small" />
-            </IconButton>
-          </Box>
-        </Box>
-        <Box className={classes.addReward}>
-          <Link to="/tier1">
-            <Button>Manage Rewards</Button>
-          </Link>
-        </Box>
-      </Box>
+      {tier
+        ? tier.map((x: any) => (
+            <TierComponent
+              name={x.name}
+              key={x.id}
+              deleteTire={() => deleteTire(x.id)}
+            />
+          ))
+        : null}
       <Box className={classes.addTire}>
-        <Button>
+        <Button onClick={addTier}>
           <AddCircleIcon fontSize="small" />
           Add Tier!
         </Button>

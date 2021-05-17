@@ -1,10 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  makeStyles,
-  createStyles,
-  Theme,
-} from "@material-ui/core/styles";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { Button, Box, IconButton } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -84,28 +80,35 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+interface PropType {
+  name: string;
+  deleteTire: () => void;
+}
 
-export const TierComponent = () => {
+export const TierComponent: React.FC<PropType> = ({
+  name,
+  deleteTire,
+}: PropType) => {
   const classes = useStyles();
 
-  return (    
-      <Box className={classes.wrapper}>
-        <Box className={classes.tierBar}>
-          <Box className={classes.tierBarName}>Tier 1</Box>
-          <Box className={classes.tierBarButtons}>
-            <IconButton>
-              <EditIcon className={classes.editTier} fontSize="small" />
-            </IconButton>
-            <IconButton>
-              <DeleteIcon className={classes.deleteTire} fontSize="small" />
-            </IconButton>
-          </Box>
+  return (
+    <Box className={classes.wrapper}>
+      <Box className={classes.tierBar}>
+        <Box className={classes.tierBarName}>{name}</Box>
+        <Box className={classes.tierBarButtons}>
+          <IconButton>
+            <EditIcon className={classes.editTier} fontSize="small" />
+          </IconButton>
+          <IconButton onClick={deleteTire}>
+            <DeleteIcon className={classes.deleteTire} fontSize="small" />
+          </IconButton>
         </Box>
-        <Box className={classes.addReward}>
-          <Link to="/tier1">
-            <Button>Manage Rewards</Button>
-          </Link>
-        </Box>
-      </Box>  
+      </Box>
+      <Box className={classes.addReward}>
+        <Link to="/tier1">
+          <Button>Manage Rewards</Button>
+        </Link>
+      </Box>
+    </Box>
   );
 };
