@@ -1,22 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import {
-  makeStyles,
-  createStyles,
-  Theme,
-  withStyles,
-} from "@material-ui/core/styles";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { Button, Box, IconButton } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import { TierComponent } from "./tierComponent";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wrapper: {
       maxWidth: 600,
-      margin: "0 auto",
+      margin: "10px auto",
       display: "flex",
       backgroundColor: "#fff",
     },
@@ -51,16 +44,20 @@ const useStyles = makeStyles((theme: Theme) =>
     addReward: {
       marginLeft: 5,
       height: "100%",
-      "& button": {
-        width: " max-content",
-        textTransform: "capitalize",
-        backgroundColor: "#00CBB0",
-        color: "#fff",
-        "&:hover": {
+      "& a":{
+        textDecoration: "none",
+        "& button": {
+          width: " max-content",
+          textTransform: "capitalize",          
+          backgroundColor: "#00CBB0",
           color: "#fff",
-          background: "#00CBB0",
+          "&:hover": {
+            color: "#fff",
+            background: "#00CBB0",
+          },
         },
-      },
+      }
+      
     },
     addTire: {
       margin: "0 auto",
@@ -86,49 +83,37 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-interface TierProps {
-  id: number;
-  name: string | null;
+interface PropType {
+  name: string;
+  deleteTire: () => void;
+  enteredName: string | null| undefined
 }
 
-export const Tier: React.FC = () => {
+export const Tier: React.FC<PropType> = ({
+  name,
+  deleteTire,
+  enteredName
+}: PropType) => {
   const classes = useStyles();
-  const [tier, setTier] = useState<TierProps[]>([]);
-
-  console.log("tier", tier);
-
-  const addTier = () => {
-    const enteredName = prompt("Please enter your name");
-    let obj = {
-      id: tier.length,
-      name: enteredName,
-    };
-    setTier([...tier, { ...obj }]);
-  };
-
-  const deleteTire = (id: number) => {
-    let array = tier.filter((obj) => obj.id !== id);
-    setTier([...array]);
-  };
 
   return (
-    <>
-      {tier
-        ? tier.map((x: any) => (
-            <TierComponent
-              name={x.name}
-              key={x.id}
-              deleteTire={() => deleteTire(x.id)}
-            />
-          ))
-        : null}
-      <Box className={classes.addTire}>
-        <Button onClick={addTier}>
-          <AddCircleIcon fontSize="small" />
-          Add Tier!
-        </Button>
+    <Box className={classes.wrapper}>
+      <Box className={classes.tierBar}>
+        <Box className={classes.tierBarName}>{enteredName}</Box>
+        <Box className={classes.tierBarButtons}>
+          <IconButton>
+            <EditIcon className={classes.editTier} fontSize="small" />
+          </IconButton>
+          <IconButton onClick={deleteTire}>
+            <DeleteIcon className={classes.deleteTire} fontSize="small" />
+          </IconButton>
+        </Box>
       </Box>
-    </>
+      <Box className={classes.addReward}>
+        <Link to="/tier1">
+          <Button  >Manage Rewards</Button>
+        </Link>
+      </Box>
+    </Box>
   );
 };

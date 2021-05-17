@@ -53,7 +53,7 @@ interface PropTypes {
   deleteObjectSelected: () => void;
 }
 
-export const Test3: React.FC<PropTypes> = ({
+export const ObjectSelected: React.FC<PropTypes> = ({
   name,
   price,
   fileDelivered,

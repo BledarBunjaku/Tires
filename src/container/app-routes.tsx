@@ -1,9 +1,9 @@
+import React,{useState} from "react"
 import Box from "@material-ui/core/Box";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { Tiers } from "./tiers";
-import { Tier } from "./Tier/tier";
-import {Test2} from "./test2"
+import { Rewards } from "./rewards";
+import { AddTier } from "./Tier/addTier";
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -44,8 +44,35 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+interface TierTypes {
+  id: number;
+  name: string | null;
+}
 export const App = () => {
   const classes = useStyles();
+  const [tierName, setTierName] = React.useState<string>();
+  const [tier, setTier] = useState<TierTypes[]>([]);
+
+  let enteredName: string | null
+
+  const addTier = () => {
+    enteredName = prompt("Please enter your name");
+    let obj = {
+      id: tier.length,
+      name: enteredName,
+    };
+    setTier([...tier, { ...obj }]);
+  };
+
+  const deleteTire = (id: number) => {
+    let array = tier.filter((obj) => obj.id !== id);
+    setTier([...array]);
+  };
+  console.log("tierName", tierName)
+
+  const setName = (param: string) => {
+    setTierName(param)
+  }
   return (
     <Router>
       <Box className={classes.mainHeader}>
@@ -60,10 +87,10 @@ export const App = () => {
       </Box>
       <Switch>
         <Route exact path="/">
-          <Tier />
+          <AddTier setName={setName} deleteTire={deleteTire} addTier={addTier} tier={tier} />
         </Route>
         <Route path="/tier1">
-          <Tiers />
+          <Rewards  name={tierName} />
         </Route>
       </Switch>
     </Router>

@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect } from "react";
 import {
   makeStyles,
   createStyles,
   Theme,
-  withStyles,
 } from "@material-ui/core/styles";
 import {
   Button,
   Box,
   Select,
-  MenuItem,
   Checkbox,
   ListItemText,
   Input,
-  CheckboxProps,
   Typography,
 } from "@material-ui/core";
 import axios from "axios";
-import { Test3 } from "./objectList";
+import { ObjectSelected } from "./Selected-Objects/object-list";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,6 +22,11 @@ const useStyles = makeStyles((theme: Theme) =>
       body: {
         background: "#EFEEEF",
       },
+    },
+
+    tierWrapper:{
+      maxWidth: 1000,
+      margin: "0 auto"
     },
     months: {
       textTransform: "capitalize",
@@ -36,8 +38,10 @@ const useStyles = makeStyles((theme: Theme) =>
         color: "#fff",
       },
     },
+
+    //width 100%
     monthWrapper: {
-      maxWidth: 1000,
+      width: "100%",  
       margin: "0 auto",
       overflow: "hidden",
       paddingBottom: 20,
@@ -46,9 +50,6 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: "2rem",
         textAlign: "center",
         color: "#656465",
-      },
-      "& div": {
-        display: "inline-flex",
       },
     },
 
@@ -63,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
     selectObjectBar: {
       display: "flex",
-      maxWidth: 1000,
+      width: "100%",
       margin: "0 auto",
     },
     selectObjects: {
@@ -101,16 +102,15 @@ const useStyles = makeStyles((theme: Theme) =>
     //ajsajsaks
 
     wrapper: {
-      marginTop: 20,
       display: "flex",
-      maxWidth: 1000,
-      margin: "0 auto",
+      width: "100%",
+      margin: "20px auto 10px auto",
+      boxSizing: "border-box",
       padding: " 5px 10px",
       backgroundColor: "#B0AEB0",
       borderRadius: 5,
       color: "#FFF",
       boxShadow: "0 1px 3px #b5b5b5",
-      marginBottom: 10,
     },
     name: {
       flexBasis: 150,
@@ -131,19 +131,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const GreenCheckbox = withStyles({
-  root: {
-    "&$checked": {
-      color: "green",
-    },
-    "& svg": {
-      "& path": {
-        background: "yellow",
-      },
-    },
-  },
-  checked: {},
-})((props: CheckboxProps) => <Checkbox {...props} />);
+// const GreenCheckbox = withStyles({
+//   root: {
+//     "&$checked": {
+//       color: "green",
+//     },
+//     "& svg": {
+//       "& path": {
+//         background: "yellow",
+//       },
+//     },
+//   },
+//   checked: {},
+// })((props: CheckboxProps) => <Checkbox {...props} />);
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -153,8 +153,7 @@ const MenuProps = {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
     },
-  },
-};
+}}
 
 // const names = [
 //   "Oliver Hansen",
@@ -190,22 +189,21 @@ interface ArrayProps {
   title: string;
   userId: number;
 }
-interface NamesProps {}
+interface TiersProps {
+  name: string | undefined
+}
 
-export const Tiers = () => {
+export const Rewards: React.FC< TiersProps> = ({name}) => {
   const classes = useStyles();
+  const [personName, setPersonName] = React.useState<string[]>([]);
   const [selectAll, setSelectAll] = React.useState<boolean>(false);
   const [users, setUsers] = React.useState<ArrayProps[]>();
   const [names, setNames] = React.useState<string[]>([]);
-  const [personName, setPersonName] = React.useState<string[]>([]);
   const [objSelected, setObjSelected] = React.useState<ArrayProps[]>([]);
+  
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    if (event.target.value === "aaa") {
-      setPersonName([...names]);
-    } else if (event) {
-      setPersonName(event.target.value as string[]);
-    }
+    setPersonName(event.target.value as string[]);
   };
 
   useEffect(() => {
@@ -216,11 +214,12 @@ export const Tiers = () => {
       setNames(newUsers.map((user: any) => user.title.substr(0, 11)));
     });
   }, []);
-  // useEffect(() => {
-  //   if (!selectAll) {
-  //     setPersonName([]);
-  //   }
-  // }, [selectAll]);
+
+  useEffect(() => {
+    if(!selectAll){
+      setPersonName([]);
+    }
+}, [selectAll]);
 
   let newArray: any[] = [];
   const selectedObjs = () => {
@@ -251,9 +250,9 @@ export const Tiers = () => {
   console.log("personName", personName);
 
   return (
-    <>
+    <Box className={classes.tierWrapper}>
       <Box className={classes.monthWrapper}>
-        <Typography>TIER 1</Typography>
+        <Typography>{name}</Typography>
         <Box>
           {months.map((month) => (
             <Button className={classes.months}>{month}</Button>
@@ -267,36 +266,38 @@ export const Tiers = () => {
             <Select
               className={classes.select}
               multiple
-              value={personName}
-              onChange={(e) => handleChange(e)}
+              value={selectAll ? names : personName} 
+              onChange={(e) => (selectAll ? null : handleChange(e))}
               input={<Input disableUnderline={true} />}
               renderValue={(selected) => (selected as string[]).join(", ")}
               MenuProps={MenuProps}
             >
-              <li value="aaa">
-                aaa
-                <button>Select all!</button>
-              </li>
+              <button
+                onClick={() => {
+                  setSelectAll(!selectAll);
+                }}
+              >
+                {selectAll ? "Unselect" : "Select all!"}
+              </button>
+              {selectAll && names
+                ? names.map((name) => (
+                    <li value={name}>
+                      <Box display="flex">
+                        <Checkbox checked={true} />
+                        <ListItemText primary={name} />
+                      </Box>
+                    </li>
+                  ))
+                : names.map((name) => (
+                    <li  value={name}>
+                      <Box display="flex">
+                        <Checkbox checked={personName.indexOf(name)>1} />
+                        <ListItemText primary={name} />
+                      </Box>
+                    </li>
+                  ))}
 
-              {
-                // selectAll && names
-                // ? names.map((name) => (
-                //     <li value={name}>
-                //       <Box display="flex">
-                //         <Checkbox checked={true} />
-                //         <ListItemText primary={name} />
-                //       </Box>
-                //     </li>
-                // ))
-                names.map((name) => (
-                  <li value={name}>
-                    <Box display="flex">
-                      <Checkbox checked={personName.indexOf(name) > -1} />
-                      <ListItemText primary={name} />
-                    </Box>
-                  </li>
-                ))
-              }
+                  
             </Select>
           </Box>
           <Box className={classes.addObjects}>
@@ -312,7 +313,7 @@ export const Tiers = () => {
       </Box>
       {users
         ? objSelected.map((obj) => (
-            <Test3
+            <ObjectSelected
               name={obj.title.substr(0, 11)}
               price="price"
               fileDelivered={obj.body.substr(0, 10)}
@@ -320,7 +321,7 @@ export const Tiers = () => {
             />
           ))
         : null}
-    </>
+    </Box>
   );
 };
 

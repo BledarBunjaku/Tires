@@ -1,10 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { Button, Box, IconButton } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
+import {
+  makeStyles,
+  createStyles,
+  Theme,
+} from "@material-ui/core/styles";
+import { Button, Box } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import { Tier } from "./tier";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,35 +82,37 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-interface PropType {
-  name: string;
-  deleteTire: () => void;
+
+interface TierProps {
+  setName: (x:string) => void
+  deleteTire: (x: number) => void
+  addTier: () => void
+  tier: any 
 }
 
-export const TierComponent: React.FC<PropType> = ({
-  name,
-  deleteTire,
-}: PropType) => {
+export const AddTier: React.FC<TierProps> = ({ deleteTire, addTier, tier }:TierProps) => {
   const classes = useStyles();
 
-  return (
-    <Box className={classes.wrapper}>
-      <Box className={classes.tierBar}>
-        <Box className={classes.tierBarName}>{name}</Box>
-        <Box className={classes.tierBarButtons}>
-          <IconButton>
-            <EditIcon className={classes.editTier} fontSize="small" />
-          </IconButton>
-          <IconButton onClick={deleteTire}>
-            <DeleteIcon className={classes.deleteTire} fontSize="small" />
-          </IconButton>
-        </Box>
+  console.log("tier", tier);
+
+    return (
+    <>
+      {tier
+        ? tier.map((x: any) => (
+            <Tier
+              enteredName={x.name}
+              name={x.name}
+              key={x.id}
+              deleteTire={() => deleteTire(x.id)}
+            />
+          ))
+        : null}
+      <Box className={classes.addTire}>
+        <Button onClick={() => addTier()}>
+          <AddCircleIcon fontSize="small" />
+          Add Tier!
+        </Button>
       </Box>
-      <Box className={classes.addReward}>
-        <Link to="/tier1">
-          <Button>Manage Rewards</Button>
-        </Link>
-      </Box>
-    </Box>
+    </>
   );
 };

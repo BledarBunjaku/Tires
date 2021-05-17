@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Test2 = () => {
+export const SelectedObjectsHeader = () => {
   const classes = useStyles();
 
   return (
